@@ -4,6 +4,8 @@ import (
 	"belajar-go-rest/helper"
 	"belajar-go-rest/model/web"
 	"net/http"
+
+	"github.com/julienschmidt/httprouter"
 )
 
 type AuthMiddleware struct {
@@ -12,8 +14,8 @@ type AuthMiddleware struct {
 
 const API_KEY = "RAHASIA"
 
-func NewAuthMiddleware(handler http.Handler) *AuthMiddleware {
-	return &AuthMiddleware{Handler: handler}
+func NewAuthMiddleware(router *httprouter.Router) *AuthMiddleware {
+	return &AuthMiddleware{Handler: router}
 }
 
 func (middleware *AuthMiddleware) ServeHTTP(writer http.ResponseWriter, request *http.Request) {

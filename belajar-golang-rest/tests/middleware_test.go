@@ -19,7 +19,6 @@ import (
 	"time"
 
 	"github.com/go-playground/validator"
-	"github.com/julienschmidt/httprouter"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -41,13 +40,12 @@ func truncateCategories(db *sql.DB) {
 }
 
 func setupRouter(db *sql.DB) http.Handler {
-	router := httprouter.New()
 	validate := validator.New()
 	categoryRepository := repository.NewCategoryRepository()
 	categoryService := service.NewCategoryService(categoryRepository, db, validate)
 	categoryController := controller.NewCategoryController(categoryService)
 
-	app.AddCategoryRoutes(router, categoryController)
+	router := app.NewRouter(categoryController)
 	router.PanicHandler = exception.ErrorHandler
 
 	return middleware.NewAuthMiddleware(router)
