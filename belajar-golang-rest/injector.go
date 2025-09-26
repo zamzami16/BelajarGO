@@ -6,6 +6,7 @@ package main
 import (
 	"belajar-go-rest/app"
 	"belajar-go-rest/controller"
+	"belajar-go-rest/logging"
 	"belajar-go-rest/middleware"
 	"belajar-go-rest/repository"
 	"belajar-go-rest/service"
@@ -26,6 +27,7 @@ func InitializeServer() *http.Server {
 	wire.Build(
 		app.NewDB,
 		validator.New,
+		logging.NewLoggerProvider,
 		categorySet,
 		app.NewRouter,
 		middleware.NewAuthMiddleware,

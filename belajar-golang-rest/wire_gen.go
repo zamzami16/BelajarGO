@@ -9,6 +9,7 @@ package main
 import (
 	"belajar-go-rest/app"
 	"belajar-go-rest/controller"
+	"belajar-go-rest/logging"
 	"belajar-go-rest/middleware"
 	"belajar-go-rest/repository"
 	"belajar-go-rest/service"
@@ -23,7 +24,8 @@ func InitializeServer() *http.Server {
 	categoryRepository := repository.NewCategoryRepository()
 	db := app.NewDB()
 	validate := validator.New()
-	categoryService := service.NewCategoryService(categoryRepository, db, validate)
+	loggerProvider := logging.NewLoggerProvider()
+	categoryService := service.NewCategoryService(categoryRepository, db, validate, loggerProvider)
 	categoryController := controller.NewCategoryController(categoryService)
 	router := app.NewRouter(categoryController)
 	authMiddleware := middleware.NewAuthMiddleware(router)

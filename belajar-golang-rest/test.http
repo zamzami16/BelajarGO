@@ -24,7 +24,7 @@ Content-Type: application/json
 ###
 
 ### Update a category
-PUT http://localhost:3000/api/categories/4
+PUT http://localhost:3000/api/categories/1
 X-API-Key: RAHASIA
 Content-Type: application/json
 

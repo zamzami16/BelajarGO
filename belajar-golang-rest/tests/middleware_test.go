@@ -5,6 +5,7 @@ import (
 	"belajar-go-rest/controller"
 	"belajar-go-rest/exception"
 	"belajar-go-rest/helper"
+	"belajar-go-rest/logging"
 	"belajar-go-rest/middleware"
 	"belajar-go-rest/model/domain"
 	"belajar-go-rest/repository"
@@ -42,7 +43,8 @@ func truncateCategories(db *sql.DB) {
 func setupRouter(db *sql.DB) http.Handler {
 	validate := validator.New()
 	categoryRepository := repository.NewCategoryRepository()
-	categoryService := service.NewCategoryService(categoryRepository, db, validate)
+	logger := logging.NewLoggerProvider()
+	categoryService := service.NewCategoryService(categoryRepository, db, validate, logger)
 	categoryController := controller.NewCategoryController(categoryService)
 
 	router := app.NewRouter(categoryController)
