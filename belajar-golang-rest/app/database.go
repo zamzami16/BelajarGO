@@ -2,9 +2,11 @@ package app
 
 import (
 	"belajar-go-rest/helper"
+	"context"
 	"database/sql"
 	"time"
 
+	"github.com/jackc/pgx/v5/pgxpool"
 	_ "github.com/jackc/pgx/v5/stdlib"
 )
 
@@ -20,4 +22,20 @@ func NewDB() *sql.DB {
 	db.SetConnMaxIdleTime(10 * time.Minute)
 
 	return db
+}
+
+func NewPgxPool() *pgxpool.Pool {
+	config, err := pgxpool.ParseConfig(dbUrl)
+	helper.PanicIfError(err)
+
+	config.MaxConns = 25
+	config.MinConns = 5
+	config.MaxConnLifetime = 30 * time.Minute
+	config.MaxConnIdleTime = 1 * time.Minute
+	config.HealthCheckPeriod = 30 * time.Second
+
+	pool, err := pgxpool.NewWithConfig(context.Background(), config)
+	helper.PanicIfError(err)
+
+	return pool
 }

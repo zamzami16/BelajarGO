@@ -16,7 +16,14 @@ import (
 	"github.com/google/wire"
 )
 
-// Providers
+// Providers for pgxpool-based implementation
+var categoryPgxSet = wire.NewSet(
+	repository.NewCategoryRepository, // Use existing repository
+	service.NewCategoryServicePgx,    // Use pgxpool service with existing repository
+	controller.NewCategoryController,
+)
+
+// Original SQL-based providers (kept for compatibility)
 var categorySet = wire.NewSet(
 	repository.NewCategoryRepository,
 	service.NewCategoryService,
@@ -24,6 +31,20 @@ var categorySet = wire.NewSet(
 )
 
 func InitializeServer() *http.Server {
+	wire.Build(
+		app.NewPgxPool, // Use pgxpool instead of NewDB
+		validator.New,
+		logging.NewLoggerProvider,
+		categoryPgxSet, // Use pgxpool-based implementation
+		app.NewRouter,
+		middleware.NewAuthMiddleware,
+		newServer,
+	)
+	return nil
+}
+
+// Alternative initializer with SQL-based implementation
+func InitializeServerSQL() *http.Server {
 	wire.Build(
 		app.NewDB,
 		validator.New,

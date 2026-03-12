@@ -87,7 +87,7 @@ func contextualNotFoundError(writer http.ResponseWriter, err any) bool {
 		writer.Header().Set("Content-Type", "Application/json")
 		writer.WriteHeader(http.StatusNotFound)
 
-		webResponse := web.WebResponse{
+		webResponse := web.WebResponse[string]{
 			Code:   http.StatusNotFound,
 			Status: "NOT FOUND",
 			Data:   exc.NotFoundError.Error,
@@ -120,7 +120,7 @@ func validationError(writer http.ResponseWriter, err any) bool {
 		writer.Header().Set("Content-Type", "Application/json")
 		writer.WriteHeader(http.StatusBadRequest)
 
-		webResponse := web.WebResponse{
+		webResponse := web.WebResponse[string]{
 			Code:   http.StatusBadRequest,
 			Status: "BAD REQUEST",
 			Data:   exc.Error(),
@@ -140,7 +140,7 @@ func notFoundError(writer http.ResponseWriter, err any) bool {
 		writer.Header().Set("Content-Type", "Application/json")
 		writer.WriteHeader(http.StatusNotFound)
 
-		webResponse := web.WebResponse{
+		webResponse := web.WebResponse[string]{
 			Code:   http.StatusNotFound,
 			Status: "NOT FOUND",
 			Data:   exc.Error,
@@ -158,7 +158,7 @@ func internalServerError(writer http.ResponseWriter, err any) {
 	writer.Header().Set("Content-Type", "Application/json")
 	writer.WriteHeader(http.StatusInternalServerError)
 
-	webResponse := web.WebResponse{
+	webResponse := web.WebResponse[string]{
 		Code:   http.StatusInternalServerError,
 		Status: "INTERNAL SERVER ERROR",
 		Data:   getErrorString(err),

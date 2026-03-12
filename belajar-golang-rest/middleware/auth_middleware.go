@@ -22,7 +22,7 @@ func (middleware *AuthMiddleware) ServeHTTP(writer http.ResponseWriter, request 
 	if request.Header.Get("X-API-KEY") != API_KEY {
 		writer.Header().Set("Content-Type", "Application/json")
 		writer.WriteHeader(http.StatusUnauthorized)
-		webResponse := web.WebResponse{
+		webResponse := web.WebResponse[string]{
 			Code:   http.StatusUnauthorized,
 			Status: "UNAUTHORIZED",
 			Data:   "UNAUTHORIZED",

@@ -22,6 +22,20 @@ import (
 
 func InitializeServer() *http.Server {
 	categoryRepository := repository.NewCategoryRepository()
+	pool := app.NewPgxPool()
+	validate := validator.New()
+	loggerProvider := logging.NewLoggerProvider()
+	categoryService := service.NewCategoryServicePgx(categoryRepository, pool, validate, loggerProvider)
+	categoryController := controller.NewCategoryController(categoryService)
+	router := app.NewRouter(categoryController)
+	authMiddleware := middleware.NewAuthMiddleware(router)
+	server := newServer(authMiddleware)
+	return server
+}
+
+// Alternative initializer with SQL-based implementation
+func InitializeServerSQL() *http.Server {
+	categoryRepository := repository.NewCategoryRepository()
 	db := app.NewDB()
 	validate := validator.New()
 	loggerProvider := logging.NewLoggerProvider()
@@ -35,7 +49,10 @@ func InitializeServer() *http.Server {
 
 // injector.go:
 
-// Providers
+// Providers for pgxpool-based implementation
+var categoryPgxSet = wire.NewSet(repository.NewCategoryRepository, service.NewCategoryServicePgx, controller.NewCategoryController)
+
+// Original SQL-based providers (kept for compatibility)
 var categorySet = wire.NewSet(repository.NewCategoryRepository, service.NewCategoryService, controller.NewCategoryController)
 
 // Helper to create http.Server
